@@ -1,0 +1,35 @@
+/******************Asp.net MVC core MiddleWare Code****************************************/
+var CookieValue = httpContext.Request.Cookies[".AspNetCore.Session"];
+if (CookieValue != null)
+{
+    var cookieOptions = new CookieOptions
+    {
+        Path = httpContext.Request.PathBase.ToString(),
+        Expires = DateTime.Now.AddMinutes(20),
+        HttpOnly=true,
+        Secure=true,
+        SameSite=SameSiteMode.Strict
+ 
+    };
+    httpContext.Response.Cookies.Append(".AspNetCore.Session", CookieValue, cookieOptions);
+}
+
+/*******************Global.asax code************************************/
+
+protected void Application_PreRequestHandlerExecute(Object sender, EventArgs e)
+   {
+       // only apply session cookie persistence to requests requiring session information
+       if (Context.Handler is IRequiresSessionState || Context.Handler is IReadOnlySessionState)
+       {
+           var sessionState = ConfigurationManager.GetSection("system.web/sessionState") as SessionStateSection;
+           var cookieName = sessionState != null && !string.IsNullOrEmpty(sessionState.CookieName) ? sessionState.CookieName : "ASP.NET_SessionId";
+           var timeout = sessionState != null ? sessionState.Timeout : TimeSpan.FromMinutes(20);
+           // Ensure ASP.NET Session Cookies are accessible throughout the subdomains.
+           if (Request.Cookies[cookieName] != null && Session != null && Session.SessionID != null)
+           {
+               Response.Cookies[cookieName].Value = Session.SessionID;
+               Response.Cookies[cookieName].Path = Request.ApplicationPath;
+               Response.Cookies[cookieName].Expires = DateTime.Now.Add(timeout);
+           }
+       }            
+   }
