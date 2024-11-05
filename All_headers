@@ -1,0 +1,13 @@
+httpContext.Response.Headers.Remove("Server");
+                httpContext.Response.Headers.Remove("X-AspNet-Version");
+                httpContext.Response.Headers.Remove("X-AspNetMvc-Version");
+                httpContext.Response.Headers.Remove("Expires");
+                httpContext.Response.Headers.Remove("Connection");
+                httpContext.Response.Headers.Remove("Date");
+                httpContext.Response.Headers.Remove("X-Powered-By");
+                httpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+                httpContext.Response.Headers.Add("Pragma", "no-cache");
+ 
+                httpContext.Response.Headers.Add("X-XSS-Protection", "1;mode=block");
+                httpContext.Response.Headers.Add("X-Frame-Options", "DENY");
+                httpContext.Response.Headers.Add("Permissions-Policy", "camera=(),geolocation=()");
